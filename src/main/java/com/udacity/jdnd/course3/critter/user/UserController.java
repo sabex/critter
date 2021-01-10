@@ -1,16 +1,21 @@
 package com.udacity.jdnd.course3.critter.user;
 
+import com.udacity.jdnd.course3.critter.entity.Customer;
 import com.udacity.jdnd.course3.critter.entity.Employee;
+import com.udacity.jdnd.course3.critter.entity.Pet;
 import com.udacity.jdnd.course3.critter.entity.Schedule;
+import com.udacity.jdnd.course3.critter.service.CustomerService;
 import com.udacity.jdnd.course3.critter.service.EmployeeService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.DayOfWeek;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Handles web requests related to Users.
@@ -26,16 +31,23 @@ public class UserController {
     private EmployeeService employeeService;
 
     @Autowired
+    private CustomerService customerService;
+
+    @Autowired
     private ModelMapper modelMapper;
 
     @PostMapping("/customer")
     public CustomerDTO saveCustomer(@RequestBody CustomerDTO customerDTO){
-        throw new UnsupportedOperationException();
+        Customer newCustomer = toEntity(customerDTO);
+        if (null == newCustomer.getPets()) {
+            newCustomer.setPets(new ArrayList<Pet>());
+        }
+        return toDto(customerService.save(newCustomer));
     }
 
     @GetMapping("/customer")
     public List<CustomerDTO> getAllCustomers(){
-        throw new UnsupportedOperationException();
+        return customerService.getAllCustomers().stream().map(this::toDto).collect(Collectors.toList());
     }
 
     @GetMapping("/customer/pet/{petId}")
@@ -46,19 +58,32 @@ public class UserController {
     @PostMapping("/employee")
     public EmployeeDTO saveEmployee(@RequestBody EmployeeDTO employeeDTO) {
         Employee empToSave = toEntity(employeeDTO);
-        Employee employee = employeeService.save(toEntity(employeeDTO));
+        // check for null relationships and add if needed
+        if (null == empToSave.getSchedules()) {
+            empToSave.setSchedules(new HashSet<Schedule>());
+        }
+        if (null == empToSave.getSkills()) {
+            empToSave.setSkills(new HashSet<EmployeeSkill>());
+        }
+        if (null == empToSave.getDaysAvailable()) {
+            empToSave.setDaysAvailable(new HashSet<DayOfWeek>());
+        }
+        Employee employee = employeeService.save(empToSave);
         return toDto(employee);
     }
 
-    @PostMapping("/employee/{employeeId}")
+    @GetMapping("/employee/{employeeId}")
     public EmployeeDTO getEmployee(@PathVariable long employeeId) {
-        throw new UnsupportedOperationException();
+        return toDto(employeeService.get(employeeId));
     }
 
     // sets schedule
     @PutMapping("/employee/{employeeId}")
     public void setAvailability(@RequestBody Set<DayOfWeek> daysAvailable, @PathVariable long employeeId) {
-        throw new UnsupportedOperationException();
+        Employee employee = employeeService.get(employeeId);
+        employee.setDaysAvailable(daysAvailable);
+        employeeService.save(employee);
+        return;
     }
 
     @GetMapping("/employee/availability")
@@ -71,9 +96,13 @@ public class UserController {
     }
 
     private Employee toEntity (EmployeeDTO employeeDto) {
-        Employee employee = modelMapper.map(employeeDto, Employee.class);
-        employee.setSchedules(new HashSet<Schedule>());
-        employee.setSkills(new HashSet<EmployeeSkill>());
-        return employee;
+        return modelMapper.map(employeeDto, Employee.class);
+    }
+    private CustomerDTO toDto (Customer customer) {
+        return modelMapper.map(customer, CustomerDTO.class);
+    }
+
+    private Customer toEntity (CustomerDTO customerDTO) {
+        return modelMapper.map(customerDTO, Customer.class);
     }
 }
