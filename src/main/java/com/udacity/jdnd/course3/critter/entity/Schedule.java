@@ -30,7 +30,7 @@ public class Schedule {
 
     @ManyToMany
     @JoinTable(
-            name = "employee_schedule",
+            name = "pet_schedule",
             joinColumns = { @JoinColumn(name = "pet_id")},
             inverseJoinColumns = { @JoinColumn(name = "schedule_id")})
     private List<Pet> scheduledPets;
