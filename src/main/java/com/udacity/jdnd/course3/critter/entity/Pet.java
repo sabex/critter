@@ -16,18 +16,18 @@ import org.hibernate.annotations.Nationalized;
 @NoArgsConstructor
 public class Pet {
 
-    @Id @GeneratedValue private long id;
+  @Id @GeneratedValue private long id;
 
-    private PetType type;
+  private PetType type;
 
-    @Nationalized private String name;
-    private LocalDate birthDate;
-    private String notes;
+  @Nationalized private String name;
+  private LocalDate birthDate;
+  private String notes;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner_id")
-    private Customer ownerId;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "owner_id")
+  private Customer owner;
 
-    @ManyToMany(mappedBy = "scheduledPets")
-    private Set<Schedule> schedules;
+  @ManyToMany(mappedBy = "scheduledPets")
+  private Set<Schedule> schedules;
 }

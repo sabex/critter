@@ -14,13 +14,13 @@ import org.hibernate.annotations.Nationalized;
 @NoArgsConstructor
 public class Customer {
 
-    @Id @GeneratedValue private long id;
+  @Id @GeneratedValue private long id;
 
-    @Nationalized private String name;
+  @Nationalized private String name;
 
-    private String phoneNumber;
-    private String notes;
+  private String phoneNumber;
+  private String notes;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "ownerId")
-    private List<Pet> pets;
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "owner")
+  private List<Pet> pets;
 }
