@@ -7,6 +7,8 @@ import com.udacity.jdnd.course3.critter.repository.CustomerRepository;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @Service
 public class CustomerService {
 
@@ -16,10 +18,12 @@ public class CustomerService {
     this.customerRepository = customerRepository;
   }
 
+  @Transactional
   public Customer save(Customer customer) {
     return this.customerRepository.save(customer);
   }
 
+  @Transactional
   public Customer addPet(Customer customer, Pet pet) {
     customer.getPets().add(pet);
     return this.customerRepository.save(customer);

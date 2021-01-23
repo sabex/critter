@@ -1,4 +1,2 @@
-start by defoining the DB entities and verify hibernates creates them properly -- done
-add repository to allows queries -- done
-build service to wrap repo / convert data to / from dto
-hookup controller to service
+move dto conversion into controller layer
+check the postman tests

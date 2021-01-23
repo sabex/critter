@@ -8,6 +8,7 @@ import com.udacity.jdnd.course3.critter.schedule.ScheduleDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -65,6 +66,7 @@ public class ScheduleService {
         return  scheduleList.stream().distinct().map(this::toDTo).collect(Collectors.toList());
     }
 
+    @Transactional
     public ScheduleDTO createSchedule(ScheduleDTO scheduleDTO) {
         Schedule newSchedule = toEntity(scheduleDTO);
         return toDTo(this.save(newSchedule));
@@ -104,6 +106,7 @@ public class ScheduleService {
         return schedule;
     }
 
+    @Transactional
     private Schedule save(Schedule schedule) {
         return scheduleRepository.save(schedule);
     }

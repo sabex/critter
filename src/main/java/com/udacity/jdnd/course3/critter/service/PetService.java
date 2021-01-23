@@ -6,6 +6,8 @@ import com.udacity.jdnd.course3.critter.repository.PetRepository;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @Service
 public class PetService {
 
@@ -15,6 +17,7 @@ public class PetService {
     this.petRepository = petRepository;
   }
 
+  @Transactional
   public Pet save(Pet pet) {
     return petRepository.save(pet);
   }
